@@ -48,21 +48,14 @@ export class AuthController {
 			return
 		}
 
-		try {
-			await AuthRepository.regist({
-				phone,
-				pwd: _pwd
-			})
-	
-			ctx.body = {
-				apiCode: 0,
-				message: '注册成功，请用手机号密码登录'
-			}
-		} catch (error) {
-			ctx.body = {
-				apiCode: 0,
-				message: error.message
-			}
+		await AuthRepository.regist({
+			phone,
+			pwd: _pwd
+		})
+
+		ctx.body = {
+			apiCode: 0,
+			message: '注册成功，请用手机号密码登录'
 		}
 	}
 
@@ -101,23 +94,17 @@ export class AuthController {
 		const { phone, pwd, phoneCode } = ctx.request.body as ResetPasswordDto
 		const _pwd = md5.update(pwd).digest('hex')
 
-		try {
-			// 需要校验 phoneCode
-			// ......
-			await AuthRepository.resetPassword({
-				phone,
-				pwd: _pwd,
-				phoneCode
-			})
-			ctx.body = {
-				apiCode: 0,
-				message: '密码重置成功'
-			}
-		} catch (error) {
-			ctx.body = {
-				apiCode: -1,
-				message: error.message
-			}
+		// 需要校验 phoneCode
+		// ......
+		await AuthRepository.resetPassword({
+			phone,
+			pwd: _pwd,
+			phoneCode
+		})
+
+		ctx.body = {
+			apiCode: 0,
+			message: '密码重置成功'
 		}
 	}
 }
