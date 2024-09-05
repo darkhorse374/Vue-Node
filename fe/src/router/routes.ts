@@ -35,7 +35,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/home',
     name: 'Home',
-    component: () => import('@/pages/home.vue')
+    component: () => import('@/pages/home.vue'),
+    meta: {
+      keepAlive: true
+    }
   },
   {
     path: '/get-coupon',

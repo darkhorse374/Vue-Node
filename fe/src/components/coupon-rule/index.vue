@@ -9,7 +9,7 @@
     >
       <div class="coupon-rule-title">【优惠券有效期】</div>
       <div class="coupon-rule-detail">
-        <font color="#f00">自领取日起5天内有效</font>
+        <span color="#f00">自领取日起5天内有效</span>
       </div>
       <div class="coupon-rule-title">【活动范围】</div>
       <div class="coupon-rule-detail">所有银联卡（卡号以62开头）</div>
@@ -50,30 +50,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from 'vue'
+<script lang="ts" setup>
+import { reactive } from 'vue'
+
 import ColumnDivide from '../column-divide/index.vue'
 
-export default defineComponent({
-  components: {
-    ColumnDivide
-  },
-  setup(props: {}, context: {}) {
-    const state = reactive({
-      isShowRule: true,
-      columnName: '优惠券详情'
-    })
-
-    function showMore() {
-      state.isShowRule = !state.isShowRule
-    }
-
-    return {
-      state,
-      showMore
-    }
-  }
+const state = reactive({
+  isShowRule: true,
+  columnName: '优惠券详情'
 })
+
+function showMore() {
+  state.isShowRule = !state.isShowRule
+}
 </script>
 
 <style scoped lang="less" rel="stylesheet/less">

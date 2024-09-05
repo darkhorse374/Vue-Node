@@ -10,7 +10,7 @@
           @click="showRegionList"
         >
           <span>
-            <font>{{ regionName }}</font>
+            <span>{{ regionName }}</span>
           </span>
         </a>
         <a
@@ -19,7 +19,7 @@
           @click="showClassifyList"
         >
           <span>
-            <font>{{ classifyName }}</font>
+            <span>{{ classifyName }}</span>
           </span>
         </a>
       </div>
@@ -108,32 +108,30 @@
     >
 
     <div v-if="state.couponList.length === 0" style="background-color: white">
-      <van-skeleton title avatar :row="3" />
-      <van-skeleton title avatar :row="3" />
-      <van-skeleton title avatar :row="3" />
-      <van-skeleton title avatar :row="3" />
-      <van-skeleton title avatar :row="3" />
+      <Skeleton title avatar :row="3" />
+      <Skeleton title avatar :row="3" />
+      <Skeleton title avatar :row="3" />
+      <Skeleton title avatar :row="3" />
+      <Skeleton title avatar :row="3" />
     </div>
 
     <footer-nav></footer-nav>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  reactive,
-  computed,
-  ComputedRef,
-  defineComponent,
-  SetupContext
-} from 'vue'
+<script lang="ts" setup>
+import { reactive, computed, ComputedRef, onMounted } from 'vue'
+
 import { useStore } from 'vuex'
+
 import { StateProps } from '@/store'
 
 import { getCouponsList, getClassifyList, getRegionList } from '@/api/coupon'
 
-import { Skeleton, Dialog } from 'vant'
+import { Dialog, Skeleton } from 'vant'
+
 import Explain from '@/components/header-explain/index.vue'
+
 import FooterNav from '@/components/footer-nav/index.vue'
 
 type State = {
@@ -158,7 +156,6 @@ function _getClassifyList(state: State) {
 
 function _getCouponsList(
   state: State,
-  context: SetupContext,
   regionId: number,
   classifyId: number,
   currentPage: number
@@ -191,106 +188,90 @@ function _getRegionList(state: State) {
   })
 }
 
-export default defineComponent({
-  components: {
-    Explain,
-    FooterNav,
-    [Skeleton.name]: Skeleton
-  },
+const store = useStore<StateProps>()
 
-  setup(props: {}, context: SetupContext) {
-    const store = useStore<StateProps>()
-    const regionId: ComputedRef<number> = computed(
-      () => store.state.app.regionId
-    )
-    const regionName: ComputedRef<string> = computed(
-      () => store.state.app.regionName
-    )
-    const classifyId: ComputedRef<number> = computed(
-      () => store.state.app.classifyId
-    )
-    const classifyName: ComputedRef<string> = computed(
-      () => store.state.app.classifyName
-    )
+const regionId: ComputedRef<number> = computed(
+  () => store.state.app.regionId
+)
 
-    const state: State = reactive({
-      explainName: '全球优惠',
-      isRegion: false,
-      regionList: [],
-      classifyList: [],
-      isClassify: false,
-      currentPage: 1,
-      couponList: [],
-      isShowLoadMore: true
-    })
+const regionName: ComputedRef<string> = computed(
+  () => store.state.app.regionName
+)
 
-    const showRegionList = () => {
-      state.isRegion = true
-      state.isClassify = false
-    }
+const classifyId: ComputedRef<number> = computed(
+  () => store.state.app.classifyId
+)
 
-    const showClassifyList = () => {
-      state.isRegion = false
-      if (!state.classifyList.length) {
-        _getClassifyList(state)
-      }
-      state.isClassify = true
-    }
+const classifyName: ComputedRef<string> = computed(
+  () => store.state.app.classifyName
+)
 
-    const showCoupons = (regionId: number, classifyId: number) => {
-      const currentregionName = state.regionList
-        ? state.regionList[regionId - 1].regionName
-        : '全球'
-      const currentClassifyName = state.classifyList
-        ? state.classifyList[classifyId - 1].classifyName
-        : '购物'
+const state: State = reactive({
+  explainName: '全球优惠',
+  isRegion: false,
+  regionList: [],
+  classifyList: [],
+  isClassify: false,
+  currentPage: 1,
+  couponList: [],
+  isShowLoadMore: true
+})
 
-      state.currentPage = 1
-      state.couponList = []
+const showRegionList = () => {
+  state.isRegion = true
+  state.isClassify = false
+}
 
-      store.commit('app/changeRegionId', regionId)
-      store.commit('app/changeRegionName', currentregionName)
-      store.commit('app/changeClassifyId', classifyId)
-      store.commit('app/changeClassifyName', currentClassifyName)
-
-      _getCouponsList(state, context, regionId, classifyId, state.currentPage)
-
-      state.isRegion = state.isClassify = false
-    }
-
-    const loadMore = () => {
-      state.currentPage += 1
-      _getCouponsList(
-        state,
-        context,
-        regionId.value,
-        classifyId.value,
-        state.currentPage
-      )
-    }
-
+const showClassifyList = () => {
+  state.isRegion = false
+  if (!state.classifyList.length) {
     _getClassifyList(state)
-    _getCouponsList(
-      state,
-      context,
-      regionId.value,
-      classifyId.value,
-      state.currentPage
-    )
-    _getRegionList(state)
-
-    return {
-      state,
-      regionId,
-      regionName,
-      classifyId,
-      classifyName,
-      showRegionList,
-      showCoupons,
-      loadMore,
-      showClassifyList
-    }
   }
+  state.isClassify = true
+}
+
+const showCoupons = (regionId: number, classifyId: number) => {
+  const currentregionName = state.regionList
+    ? state.regionList[regionId - 1].regionName
+    : '全球'
+  const currentClassifyName = state.classifyList
+    ? state.classifyList[classifyId - 1].classifyName
+    : '购物'
+
+  state.currentPage = 1
+  state.couponList = []
+
+  store.commit('app/changeRegionId', regionId)
+  store.commit('app/changeRegionName', currentregionName)
+  store.commit('app/changeClassifyId', classifyId)
+  store.commit('app/changeClassifyName', currentClassifyName)
+
+  _getCouponsList(state, regionId, classifyId, state.currentPage)
+
+  state.isRegion = state.isClassify = false
+}
+
+const loadMore = () => {
+  state.currentPage += 1
+  _getCouponsList(
+    state,
+    regionId.value,
+    classifyId.value,
+    state.currentPage
+  )
+}
+
+onMounted(() => {
+  _getClassifyList(state)
+
+  _getRegionList(state)
+
+  _getCouponsList(
+    state,
+    regionId.value,
+    classifyId.value,
+    state.currentPage
+  )
 })
 </script>
 
