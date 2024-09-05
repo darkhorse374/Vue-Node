@@ -9,6 +9,8 @@ VueNode is developed using Vue3 & Node.js, and the old version can refer to:
 - [VueNode v1.x](https://github.com/zhaoyiming0803/VueNode/tree/v1.0)
 
 - [VueNode v2.x](https://github.com/zhaoyiming0803/VueNode/tree/v2.2.2)
+ 
+- [VueNode v3.x](https://github.com/zhaoyiming0803/VueNode/tree/v3.0.1)
 
 ### Replace Express with Koa.js
 
